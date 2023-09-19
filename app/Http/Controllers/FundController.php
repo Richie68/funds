@@ -11,7 +11,7 @@ class FundController extends Controller
     public function show(Fund $fund)
     {
         return Inertia::render('Funds/Show', [
-            'fund' => $fund->load('manager', 'aliases')
+            'fund' => $fund->load('manager', 'aliases', 'companies')
         ]);
     }
 

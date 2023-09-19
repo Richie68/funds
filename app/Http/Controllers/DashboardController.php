@@ -13,7 +13,7 @@ class DashboardController extends Controller
     {
         $search = Request::input('search');
         $funds = Fund::query()
-            ->with(['manager', 'aliases'])
+            ->with(['manager', 'aliases', 'companies'])
             ->when($search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhereYear('start', $search)

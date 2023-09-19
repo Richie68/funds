@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AliasController;
+use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\FundController;
 use App\Http\Controllers\Api\ManagerController;
 use Illuminate\Http\Request;
@@ -23,6 +24,15 @@ Route::post('alias/fund/{fund}', [AliasController::class, 'store'])
 
 Route::post('/manager/search', [ManagerController::class, 'search'])
     ->name('api.manager.search');
+
+Route::post('/company/search', [CompanyController::class, 'search'])
+    ->name('api.company.search');
+
+Route::post('company/{fund}/{company}', [CompanyController::class, 'update'])
+    ->name('api.funds.new-company');
+
+Route::delete('company/{company}/{fund}', [CompanyController::class, 'destroy'])
+    ->name('api.company-destroy');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

@@ -4,12 +4,14 @@ import dayjs from "dayjs";
 import {Head, Link, router, useForm} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import AliasShow from "@/Components/Funds/Alias.vue";
+import CompanyShow from "@/Components/Funds/Company.vue";
 import FindManager from "@/Components/Manager/FindComponent.vue";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 
 import {onMounted, ref} from "vue";
 import LoaderComponent from "@/Components/LoaderComponent.vue";
+import FindCompanyComponent from "@/Components/Company/FindCompanyComponent.vue";
 
 let props = defineProps({
   fund: Object,
@@ -24,6 +26,9 @@ let form = useForm({
 
 let newAlias = ref('');
 let addNewAlias = ref(false);
+let company = ref(null);
+let addNewCompany = ref(false);
+let newCompany = ref('');
 let edit = ref(false);
 let startDate = ref(new Date());
 let loadingNewAlias = ref(false);
@@ -73,6 +78,21 @@ const update = () => {
 }
 const setManager = (e) => {
   form.manager_uuid = e.uuid;
+}
+const setCompany = (e) => {
+  company.value = e.id;
+}
+const submitNewCompany = () => {
+  axios
+    .post(route('api.funds.new-company', [props.fund.id, company.value]))
+    .then(response => {
+      if(response.data === 1) {
+        router.visit(route("fund.show", props.fund.uuid));
+        return;
+      }
+
+      console.log('Something went wrong!!');
+    })
 }
 
 </script>
@@ -181,6 +201,42 @@ const setManager = (e) => {
             </dd>
           </div>
           <!-- aliases -->
+          <div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="font-medium leading-6">Investing in the following Companies</dt>
+            <dd class="mt-1 leading-6 sm:col-span-2 sm:mt-0">
+              <ul role="list"
+                  class="divide-y divide-gray-800 dark:divide-gray-100 rounded-md border border-gray-700 dark:border-gray-200">
+                <CompanyShow :fund="fund"
+                           :company="company"
+                           v-for="(company, i) in fund.companies"
+                           :key="i" />
+                <li class="flex items-center justify-between pr-5 leading-6 min-h-[40px]">
+
+                  <div class="flex items-center relative">
+                    <FindCompanyComponent @set-company="setCompany" v-if="addNewCompany" />
+                  </div>
+                  <div class="ml-4 flex flex-shrink-0 space-x-4">
+                    <button type="button"
+                            v-if="!addNewCompany"
+                            @click.prevent="addNewCompany = true"
+                            class="bg-transparent hover:text-gray-800 dark:hover:text-gray-400"
+                    >New</button>
+                    <div v-if="addNewCompany">
+                      <button type="button"
+                              @click.prevent="submitNewCompany"
+                              class="bg-transparent hover:text-gray-800 dark:hover:text-gray-400"
+                      >Add</button> |
+                      <button type="button"
+                              @click.prevent="addNewCompany = false"
+                              class="bg-transparent hover:text-gray-800 dark:hover:text-gray-400"
+                      >Cancel</button>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </dd>
+          </div>
+          <!-- Companies -->
         </dl>
       </div>
     </div>

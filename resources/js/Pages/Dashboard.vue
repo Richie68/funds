@@ -15,9 +15,13 @@ let props = defineProps({
 
 
 // General Functions
-const getAliasNames = (aliases) => {
-  let tempAlias = aliases.map( alias => alias.name);
-  return tempAlias.join(' | ');
+const getNameList = (theNames) => {
+  if(theNames.length > 0) {
+    let tempNames = theNames.map( theName => theName.name);
+    return tempNames.join(' | ');
+  }
+
+  return 0;
 }
 const searchFunds = (value) => {
   loading.value = true;
@@ -84,6 +88,7 @@ watch(
               <tr>
                 <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Name</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Fund Manager</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Investing in</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Aliases</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Start Date</th>
                 <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-3">
@@ -97,7 +102,10 @@ watch(
                   {{ fund.name }}
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ fund.manager.name }}</td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ getAliasNames(fund.aliases) }}</td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {{ getNameList(fund.companies) }}
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ getNameList(fund.aliases) }}</td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ fund.start }}</td>
                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
                   <Link :href="route('fund.show', fund.uuid)" class="text-gray-600 hover:text-gray-900"

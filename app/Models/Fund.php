@@ -34,4 +34,9 @@ class Fund extends Model
     {
         return $this->belongsToMany(Alias::class);
     }
+
+    public function companies(): BelongsToMany
+    {
+        return $this->belongsToMany(Company::class);
+    }
 }
